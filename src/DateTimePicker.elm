@@ -783,28 +783,59 @@ calendar pickerType state currentDate =
                                 |> Maybe.withDefault False
 
                         toCell day =
-                            td
-                                [ class
-                                    (case day.monthType of
-                                        DateTimePicker.DateUtils.Previous ->
-                                            [ PreviousMonth ]
+                            let
+                                isDisabled =
+                                    case config.isDisabled of
+                                        Just isDisabled ->
+                                            DateTimePicker.DateUtils.toDate year month day
+                                                |> isDisabled
 
-                                        DateTimePicker.DateUtils.Current ->
-                                            CurrentMonth
-                                                :: if isHighlighted day then
-                                                    [ SelectedDate ]
-                                                   else if isToday day then
-                                                    [ Today ]
-                                                   else
-                                                    []
+                                        Nothing ->
+                                            False
+                            in
+                                td
+                                    (
+                                        [ class
+                                            (
+                                                (case day.monthType of
+                                                    DateTimePicker.DateUtils.Previous ->
+                                                        [ PreviousMonth ]
 
-                                        DateTimePicker.DateUtils.Next ->
-                                            [ NextMonth ]
+                                                    DateTimePicker.DateUtils.Current ->
+                                                        CurrentMonth
+                                                            :: if isHighlighted day then
+                                                                [ SelectedDate ]
+                                                            else if isToday day then
+                                                                [ Today ]
+                                                            else
+                                                                []
+
+                                                    DateTimePicker.DateUtils.Next ->
+                                                        [ NextMonth ]
+                                                )
+                                            ++
+                                                (case isDisabled of
+                                                    True ->
+                                                        [ Disabled ]
+
+                                                    False ->
+                                                        []
+                                                )
+                                            )
+                                        ]
+                                    ++
+                                        (case isDisabled of
+                                            True ->
+                                                []
+
+                                            False ->
+                                                [ onMouseDownPreventDefault <| dateClickHandler pickerType stateValue year month day
+                                                , onTouchStartPreventDefault <| dateClickHandler pickerType stateValue year month day
+                                                ]
+                                        )
                                     )
-                                , onMouseDownPreventDefault <| dateClickHandler pickerType stateValue year month day
-                                , onTouchStartPreventDefault <| dateClickHandler pickerType stateValue year month day
-                                ]
-                                [ text <| toString day.day ]
+                                    [ span [] [ text <| toString day.day ]
+                                    ]
 
                         toWeekRow week =
                             tr [] (List.map toCell week)

@@ -52,3 +52,4 @@ type CssClasses
     | AM
     | PM
     | EmptyCell
+    | Disabled

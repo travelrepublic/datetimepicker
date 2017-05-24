@@ -217,6 +217,13 @@ datePickerDialogCss =
                 , hover
                     [ backgroundColor highlightSelectedDay ]
                 ]
+            , class Disabled
+                [ color darkGray
+                , backgroundColor lightGray
+                , property "cursor" "default"
+                , hover
+                    [ backgroundColor lightGray ]
+                ]
             ]
         ]
     , class Footer
