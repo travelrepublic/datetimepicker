@@ -83,14 +83,14 @@ type alias I18n =
  * `titleFormatter` is the Date to String formatter for the dialog's title.
  * `footerFormatter` is the Date to String formatter for the dialog's footer.
  * `allowYearNavigation` show/hide year navigation button.
- * `isDisabled` is the Date disabled for selection.
+ * `isDisabled` is the Date disabled for selection (first argument is maybe current date).
 -}
 type alias DatePickerConfig otherConfig =
     { otherConfig
         | nameOfDays : NameOfDays
         , firstDayOfWeek : Date.Day
         , allowYearNavigation : Bool
-        , isDisabled : Maybe (Date -> Bool)
+        , isDisabled : Maybe (Maybe Date -> Date -> Bool)
     }
 
 

@@ -9,7 +9,6 @@ import DateTimePicker.Css
 import DemoCss exposing (CssClasses(..))
 import Html.CssHelpers
 import Date.Extra.Compare exposing (is, Compare2(Before))
-import Date.Extra.Create
 import Date.Extra.Format
 import Date.Extra.Config.Config_en_us exposing (config)
 import DateParser
@@ -45,43 +44,29 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    let
-        nowTimeCmd =
-            Date.now
-                |> Task.attempt
-                    (\result ->
-                        case result of
-                            Err err ->
-                                NoOp
-
-                            Ok date ->
-                                SetCurrent date
-                    )
-    in
-        ( { dateValue = Nothing
-        , datePickerState = DateTimePicker.initialState
-        , dateValue2 = Nothing
-        , datePickerState2 = DateTimePicker.initialState
-        , dateTimeValue = Nothing
-        , dateTimePickerState = DateTimePicker.initialState
-        , analogDateTimeValue = Nothing
-        , analogDateTimePickerState = DateTimePicker.initialState
-        , customI18nValue = Nothing
-        , customI18nPickerState = DateTimePicker.initialState
-        , timeValue = Nothing
-        , timePickerState = DateTimePicker.initialState
-        , current = Nothing
-        }
-        , Cmd.batch
-            [ DateTimePicker.initialCmd DateChanged DateTimePicker.initialState
-            , DateTimePicker.initialCmd DateChanged2 DateTimePicker.initialState
-            , DateTimePicker.initialCmd DateTimeChanged DateTimePicker.initialState
-            , DateTimePicker.initialCmd AnalogDateTimeChanged DateTimePicker.initialState
-            , DateTimePicker.initialCmd CustomI18Changed DateTimePicker.initialState
-            , DateTimePicker.initialCmd TimeChanged DateTimePicker.initialState
-            , nowTimeCmd
-            ]
-        )
+    ( { dateValue = Nothing
+    , datePickerState = DateTimePicker.initialState
+    , dateValue2 = Nothing
+    , datePickerState2 = DateTimePicker.initialState
+    , dateTimeValue = Nothing
+    , dateTimePickerState = DateTimePicker.initialState
+    , analogDateTimeValue = Nothing
+    , analogDateTimePickerState = DateTimePicker.initialState
+    , customI18nValue = Nothing
+    , customI18nPickerState = DateTimePicker.initialState
+    , timeValue = Nothing
+    , timePickerState = DateTimePicker.initialState
+    , current = Nothing
+    }
+    , Cmd.batch
+        [ DateTimePicker.initialCmd DateChanged DateTimePicker.initialState
+        , DateTimePicker.initialCmd DateChanged2 DateTimePicker.initialState
+        , DateTimePicker.initialCmd DateTimeChanged DateTimePicker.initialState
+        , DateTimePicker.initialCmd AnalogDateTimeChanged DateTimePicker.initialState
+        , DateTimePicker.initialCmd CustomI18Changed DateTimePicker.initialState
+        , DateTimePicker.initialCmd TimeChanged DateTimePicker.initialState
+        ]
+    )
 
 
 subscriptions : Model -> Sub Msg
@@ -93,15 +78,15 @@ subscriptions model =
     Html.CssHelpers.withNamespace ""
 
 
-datePickerConfig : Maybe Date -> Config (DatePickerConfig {}) Msg
-datePickerConfig current =
+datePickerConfig : Config (DatePickerConfig {}) Msg
+datePickerConfig =
     let
         defaultDateConfig =
             defaultDatePickerConfig DateChanged2
     in
         { defaultDateConfig
             | isDisabled =
-                ( \date ->
+                ( \current date ->
                     case current of
                         Just c ->
                             is Before date c
@@ -196,7 +181,7 @@ view model =
                     [ label []
                         [ text "Date Picker (past dates disabled): "
                         , DateTimePicker.datePickerWithConfig
-                            (datePickerConfig model.current)
+                            datePickerConfig
                             []
                             model.datePickerState2
                             model.dateValue2
@@ -268,7 +253,6 @@ view model =
 
 type Msg
     = NoOp
-    | SetCurrent Date
     | DateChanged DateTimePicker.State (Maybe Date)
     | DateChanged2 DateTimePicker.State (Maybe Date)
     | DateTimeChanged DateTimePicker.State (Maybe Date)
@@ -282,16 +266,6 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
-
-        SetCurrent value ->
-            ( { model
-                | current =
-                    ( Date.Extra.Create.dateFromFields
-                        (Date.year value) (Date.month value) (Date.day value) 0 0 0 0
-                    ) |> Just
-                }
-            , Cmd.none
-            )
 
         DateChanged state value ->
             ( { model | dateValue = value, datePickerState = state }, Cmd.none )

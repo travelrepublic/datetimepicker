@@ -37,6 +37,7 @@ import DateTimePicker.Helpers exposing (updateCurrentDate, updateTimeIndicator)
 import DateTimePicker.Internal exposing (InternalState(..), StateValue, Time, getStateValue, initialStateValue, initialStateValueWithToday)
 import DateTimePicker.Config exposing (TimePickerType(..), Config, DatePickerConfig, TimePickerConfig, Type(..), defaultDatePickerConfig, defaultDateTimePickerConfig, defaultTimePickerConfig)
 import Date.Extra.Core
+import Date.Extra.Create
 import Date.Extra.Duration
 import List.Extra
 import DateTimePicker.SharedStyles exposing (datepickerNamespace, CssClasses(..))
@@ -799,8 +800,18 @@ calendar pickerType state currentDate =
                                 isDisabled =
                                     case config.isDisabled of
                                         Just isDisabled ->
-                                            DateTimePicker.DateUtils.toDate year month day
-                                                |> isDisabled
+                                            let
+                                                today =
+                                                    case stateValue.today of
+                                                        Just c ->
+                                                            Date.Extra.Create.dateFromFields
+                                                                (Date.year c) (Date.month c) (Date.day c) 0 0 0 0
+                                                                    |> Just
+                                                        Nothing ->
+                                                            Nothing                                                            
+                                            in
+                                                DateTimePicker.DateUtils.toDate year month day
+                                                    |> isDisabled today
 
                                         Nothing ->
                                             False
