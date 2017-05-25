@@ -548,7 +548,8 @@ digitalTimePickerDialog pickerType state currentDate =
                         )
                     |> Maybe.withDefault (class [])
                 ]
-                [ text <| (toString >> DateTimePicker.DateUtils.padding) hour ]
+                [ span [] [ text <| (toString >> DateTimePicker.DateUtils.padding) hour ]
+                ]
 
         minuteCell min =
             td
@@ -565,7 +566,8 @@ digitalTimePickerDialog pickerType state currentDate =
                         )
                     |> Maybe.withDefault (class [])
                 ]
-                [ text <| (toString >> DateTimePicker.DateUtils.padding) min ]
+                [ span [] [ text <| (toString >> DateTimePicker.DateUtils.padding) min ]
+                ]
 
         amPmCell ampm =
             let
@@ -595,7 +597,13 @@ digitalTimePickerDialog pickerType state currentDate =
                             , onTouchStartPreventDefault <| amPmClickHandler pickerType stateValue ampm
                             ]
                     )
-                    [ text ampm ]
+                    (
+                        if ampm == "" then
+                            []
+                        else
+                            [ span [] [ text ampm ]
+                            ]
+                    )
 
         upArrows config =
             [ tr [ class [ ArrowUp ] ]
@@ -603,12 +611,14 @@ digitalTimePickerDialog pickerType state currentDate =
                     [ onMouseDownPreventDefault <| hourUpHandler config stateValue currentDate
                     , onTouchStartPreventDefault <| hourUpHandler config stateValue currentDate
                     ]
-                    [ DateTimePicker.Svg.upArrow ]
+                    [ span [] [ DateTimePicker.Svg.upArrow ]
+                    ]
                 , td
                     [ onMouseDownPreventDefault <| minuteUpHandler config stateValue currentDate
                     , onTouchStartPreventDefault <| minuteUpHandler config stateValue currentDate
                     ]
-                    [ DateTimePicker.Svg.upArrow ]
+                    [ span [] [ DateTimePicker.Svg.upArrow ]
+                    ]
                 , td [] []
                 ]
             ]
@@ -619,12 +629,14 @@ digitalTimePickerDialog pickerType state currentDate =
                     [ onMouseDownPreventDefault <| hourDownHandler config stateValue currentDate
                     , onTouchStartPreventDefault <| hourDownHandler config stateValue currentDate
                     ]
-                    [ DateTimePicker.Svg.downArrow ]
+                    [ span [] [ DateTimePicker.Svg.downArrow ]
+                    ]
                 , td
                     [ onMouseDownPreventDefault <| minuteDownHandler config stateValue currentDate
                     , onTouchStartPreventDefault <| minuteDownHandler config stateValue currentDate
                     ]
-                    [ DateTimePicker.Svg.downArrow ]
+                    [ span [] [ DateTimePicker.Svg.downArrow ]
+                    ]
                 , td [] []
                 ]
             ]
