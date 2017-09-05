@@ -10,6 +10,7 @@ module DateTimePicker
         , initialState
         , initialStateWithToday
         , initialCmd
+        , setDefaultTime
         )
 
 {-| DateTime Picker
@@ -151,6 +152,33 @@ gotoPreviousYear config state =
     in
         config.onChange <| InternalState { stateValue | event = "previousYear", titleDate = updatedTitleDate }
 
+
+-- UTILITIES
+
+
+{-| Provides a utility to set the time for a datetime picker, eg. when user selects date, without selecting the time yet.
+-}
+setDefaultTime : Int -> Int -> String -> State -> State
+setDefaultTime hrs mins ampm state =
+    let
+        stateValue =
+            getStateValue state
+
+        time =
+            stateValue.time
+        
+        hasTimeSet =
+            time.hour /= Nothing || time.minute /= Nothing || time.amPm /= Nothing
+    in
+    case (stateValue.date, hasTimeSet |> not) of
+        ( Just d, True ) ->
+            InternalState
+                { stateValue
+                    | date = Just (DateTimePicker.DateUtils.setTime d hrs mins ampm)
+                    , time = time |> (\t -> { t | hour = Just hrs, minute = Just mins, amPm = Just ampm })
+                }
+        _ ->
+            state
 
 
 -- VIEWS
