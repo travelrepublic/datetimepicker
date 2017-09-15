@@ -10,6 +10,7 @@ module DateTimePicker
         , initialState
         , initialStateWithToday
         , initialCmd
+        , initialCmdWithDate
         , setDefaultTime
         )
 
@@ -19,10 +20,13 @@ module DateTimePicker
 @docs datePicker, datePickerWithConfig, dateTimePicker, dateTimePickerWithConfig, timePicker, timePickerWithConfig
 
 # Initial
-@docs initialState, initialStateWithToday, initialCmd
+@docs initialState, initialStateWithToday, initialCmd, initialCmdWithDate
 
 # Internal State
 @docs State
+
+# Utils
+@docs setDefaultTime
 
 -}
 
@@ -79,6 +83,8 @@ initialCmd onChange state =
     initialCmdWithDate onChange Nothing state    
 
 
+{-| When it is necessary to set the datepicker to a specific date.
+-}
 initialCmdWithDate : (State -> Maybe Date -> msg) -> Maybe Date -> State -> Cmd msg
 initialCmdWithDate onChange maybeDate state =
     let
