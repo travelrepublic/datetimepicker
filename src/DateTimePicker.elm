@@ -76,21 +76,31 @@ initialStateWithToday today =
 -}
 initialCmd : (State -> Maybe Date -> msg) -> State -> Cmd msg
 initialCmd onChange state =
+    initialCmdWithDate onChange Nothing state    
+
+
+initialCmdWithDate : (State -> Maybe Date -> msg) -> Maybe Date -> State -> Cmd msg
+initialCmdWithDate onChange maybeDate state =
     let
         stateValue =
             getStateValue state
 
-        setDate now =
+        setDate d =
             InternalState
                 { stateValue
-                    | today = Just now
-                    , titleDate = Just <| Date.Extra.Core.toFirstOfMonth now
+                    | today = Just d
+                    , date = maybeDate
+                    , titleDate = Just <|
+                        case maybeDate of
+                            Just md ->
+                                md
+                            Nothing ->
+                                Date.Extra.Core.toFirstOfMonth d
                 }
     in
         Task.perform
-            ((setDate >> onChange |> flip) Nothing)
+            ((setDate >> onChange |> flip) maybeDate)
             Date.now
-
 
 
 -- ACTIONS
