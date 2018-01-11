@@ -53,3 +53,4 @@ type CssClasses
     | PM
     | EmptyCell
     | Disabled
+    | IsFocused

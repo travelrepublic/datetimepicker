@@ -368,7 +368,7 @@ view pickerType attributes state currentDate =
 
         html config cssClasses =
             div
-                [ cssClasses ]
+                [ class (cssClasses ++ (if stateValue.inputFocused then [ IsFocused ] else [])) ]
                 [ input (inputAttributes config) []
                 , if stateValue.inputFocused && not (shouldForceClose config) then
                     dialog pickerType state currentDate
@@ -378,13 +378,13 @@ view pickerType attributes state currentDate =
     in
         case pickerType of
             DateType config ->
-                html config (class [ DatePicker ])
+                html config [ DatePicker ]
 
             DateTimeType config ->
-                html config (class [ DatePicker, TimePicker ])
+                html config [ DatePicker, TimePicker ]
 
             TimeType config ->
-                html config (class [ TimePicker ])
+                html config [ TimePicker ]
 
 
 
