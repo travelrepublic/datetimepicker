@@ -32,7 +32,7 @@ module DateTimePicker
 
 import Date exposing (Date)
 import Html exposing (Html, input, div, span, text, button, table, tr, td, th, thead, tbody, ul, li)
-import Html.Attributes exposing (value)
+import Html.Attributes exposing (value, autocomplete)
 import Html.Events exposing (onFocus, onBlur, onClick)
 import Task
 import DateTimePicker.Svg
@@ -80,7 +80,7 @@ initialStateWithToday today =
 -}
 initialCmd : (State -> Maybe Date -> msg) -> State -> Cmd msg
 initialCmd onChange state =
-    initialCmdWithDate onChange Nothing state    
+    initialCmdWithDate onChange Nothing state
 
 
 {-| When it is necessary to set the datepicker to a specific date.
@@ -182,7 +182,7 @@ setDefaultTime hrs mins ampm state =
 
         time =
             stateValue.time
-        
+
         hasTimeSet =
             time.hour /= Nothing || time.minute /= Nothing || time.amPm /= Nothing
     in
@@ -361,6 +361,7 @@ view pickerType attributes state currentDate =
                         |> Maybe.map config.i18n.inputFormat.inputFormatter
                         |> Maybe.withDefault ""
                         |> value
+                   , autocomplete False
                    ]
 
         shouldForceClose config =
@@ -852,7 +853,7 @@ calendar pickerType state currentDate =
                                                                 (Date.year c) (Date.month c) (Date.day c) 0 0 0 0
                                                                     |> Just
                                                         Nothing ->
-                                                            Nothing                                                            
+                                                            Nothing
                                             in
                                                 DateTimePicker.DateUtils.toDate year month day
                                                     |> isDisabled today
